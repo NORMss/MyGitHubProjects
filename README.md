@@ -1,6 +1,6 @@
 # GitHub Project Parser
 
-[Русская версия](./readme_ru.md)
+[Русская версия](./README_RU.md)
 
 ### How It Works
 1. Before running the parser, set your configurations in [main.py](./main.py).
