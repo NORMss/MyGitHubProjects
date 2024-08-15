@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Projects</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>My GitHub Projects</h1>
+        <div id="controls">
+            <label for="sort">Sort by:</label>
+            <select id="sort">
+                <option value="date-newest">Newest</option>
+                <option value="date-oldest">Oldest</option>
+                <option value="alphabetical-asc">A-Z</option>
+                <option value="alphabetical-desc">Z-A</option>
+            </select>
+            <input type="text" id="search" placeholder="Search projects...">
+        </div>
+    </header>
+
+    <main>
+        <div id="project-list">
+            <!-- Список проектов будет здесь -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Sergey. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

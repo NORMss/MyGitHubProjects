@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 2em;
+    color: #0077cc;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#project-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.project {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.project h2 a {
+    font-size: 1.5em;
+    text-decoration: none;
+    color: #0077cc;
+}
+
+.project h2 a:hover {
+    text-decoration: underline;
+}
+
+.project-description {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.issue {
+    margin-bottom: 10px;
+}
+
+.issue-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.issue-links a {
+    color: #0077cc;
+    text-decoration: none;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+.issue-links a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #777;
+}
+
+#controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#controls select,
+#controls input {
+    padding: 8px;
+    font-size: 1em;
+}
+
+.project-date {
+    font-size: 0.9em;
+    color: gray;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
