@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let repositories = [];
 
-    // Функция для загрузки JSON с проектами
+    // Загрузка JSON с проектами
     fetch('github_projects.json')
         .then(response => response.json())
         .then(data => {
@@ -12,69 +12,105 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Ошибка при загрузке JSON:', error);
         });
 
-    // Функция для отображения проектов
+    // Отображение проектов
     function displayProjects(repos) {
         const projectList = document.getElementById('project-list');
-        projectList.innerHTML = '';  // Очищаем старые проекты
-
+        projectList.innerHTML = '';
+    
         repos.forEach(repo => {
             const projectDiv = document.createElement('div');
             projectDiv.classList.add('project');
-
+    
             const projectTitle = document.createElement('h2');
             const projectLink = document.createElement('a');
             projectLink.href = repo.url;
             projectLink.textContent = repo.name;
-            projectLink.target = '_blank'; // Открыть ссылку в новом окне
+            projectLink.target = '_blank';
             projectTitle.appendChild(projectLink);
             projectDiv.appendChild(projectTitle);
-
-            // Отображение даты создания репозитория
+    
             const projectDate = document.createElement('p');
             projectDate.classList.add('project-date');
-            const createdAt = new Date(repo.created_at).toLocaleDateString(); // Форматируем дату
+            const createdAt = new Date(repo.created_at).toLocaleDateString();
             projectDate.textContent = `Created on: ${createdAt}`;
             projectDiv.appendChild(projectDate);
-
+    
             const projectDescription = document.createElement('p');
             projectDescription.classList.add('project-description');
             projectDescription.textContent = repo.description || 'No description available';
             projectDiv.appendChild(projectDescription);
-
-            // Сортируем уроки по возрастанию
-            repo.issues.sort((a, b) => a.title.localeCompare(b.title));
-
-            // Если у проекта есть issues с ссылками
-            repo.issues.forEach(issue => {
-                const issueDiv = document.createElement('div');
-                issueDiv.classList.add('issue');
-
-                const issueTitle = document.createElement('p');
-                issueTitle.classList.add('issue-title');
-                issueTitle.textContent = issue.title;
-                issueDiv.appendChild(issueTitle);
-
-                const issueLinks = document.createElement('div');
-                issueLinks.classList.add('issue-links');
-
-                // Проходим по каждой ссылке в issue
-                issue.links.forEach(link => {
-                    const issueLink = document.createElement('a');
-                    issueLink.href = link.url;
-                    issueLink.textContent = link.text;
-                    issueLink.target = '_blank'; // Открытие ссылки в новом окне
-                    issueLinks.appendChild(issueLink);
+    
+            if (repo.issues_with_links.length > 0 || repo.issues_without_links.length > 0) {
+                const issuesContainer = document.createElement('div');
+                issuesContainer.classList.add('issues-container');
+    
+                const allIssues = [...repo.issues_with_links, ...repo.issues_without_links];
+                const maxIssuesToShow = 5;
+    
+                allIssues.slice(0, maxIssuesToShow).forEach(issue => {
+                    const issueDiv = createIssueDiv(issue);
+                    issuesContainer.appendChild(issueDiv);
                 });
-
-                issueDiv.appendChild(issueLinks);
-                projectDiv.appendChild(issueDiv);
-            });
-
+    
+                if (allIssues.length > maxIssuesToShow) {
+                    const toggleButton = document.createElement('button');
+                    toggleButton.textContent = 'Show More';
+                    toggleButton.classList.add('toggle-button');
+                    toggleButton.addEventListener('click', () => {
+                        if (toggleButton.textContent === 'Show More') {
+                            allIssues.slice(maxIssuesToShow).forEach(issue => {
+                                const issueDiv = createIssueDiv(issue);
+                                issuesContainer.appendChild(issueDiv);
+                            });
+                            toggleButton.textContent = 'Show Less';
+                        } else {
+                            while (issuesContainer.childNodes.length > maxIssuesToShow) {
+                                issuesContainer.removeChild(issuesContainer.lastChild);
+                            }
+                            toggleButton.textContent = 'Show More';
+                        }
+                    });
+                    projectDiv.appendChild(toggleButton);
+                }
+    
+                projectDiv.appendChild(issuesContainer);
+            }
+    
             projectList.appendChild(projectDiv);
         });
     }
+    
+    function createIssueDiv(issue) {
+        const issueDiv = document.createElement('div');
+        issueDiv.classList.add('issue');
+    
+        const issueTitle = document.createElement('p');
+        issueTitle.classList.add('issue-title');
+        issueTitle.textContent = issue.title || 'No title';
+        issueDiv.appendChild(issueTitle);
+    
+        if (issue.links && issue.links.length > 0) {
+            const linksContainer = document.createElement('div');
+            linksContainer.classList.add('issue-links');
+            issue.links.forEach(link => {
+                const linkElement = document.createElement('a');
+                linkElement.href = link.url;
+                linkElement.textContent = link.text;
+                linkElement.target = '_blank';
+                linksContainer.appendChild(linkElement);
+            });
+            issueDiv.appendChild(linksContainer);
+        } else if (issue.description) {
+            const description = document.createElement('p');
+            description.textContent = issue.description;
+            issueDiv.appendChild(description);
+        }
+    
+        return issueDiv;
+    }
+    
 
-    // Функция сортировки проектов по дате и алфавиту
+    // Сортировка проектов
     function sortProjects(sortOrder) {
         if (sortOrder === 'date-newest') {
             repositories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -88,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayProjects(repositories);
     }
 
-    // Функция поиска по названию и описанию проекта
+    // Поиск проектов
     function searchProjects(query) {
         const filteredRepos = repositories.filter(repo => {
             const nameMatch = repo.name.toLowerCase().includes(query.toLowerCase());
@@ -98,12 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
         displayProjects(filteredRepos);
     }
 
-    // Обработчик события сортировки
+    // Обработчики событий для сортировки и поиска
     document.getElementById('sort').addEventListener('change', (event) => {
         sortProjects(event.target.value);
     });
 
-    // Обработчик события поиска
     document.getElementById('search').addEventListener('input', (event) => {
         searchProjects(event.target.value);
     });

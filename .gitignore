@@ -1,2 +1,5 @@
 github_projects.json
 skipped_repos.json
+config.json
+__pycache__
+constants.py
